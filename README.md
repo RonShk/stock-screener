@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Stock Screener Hub
+
+A comprehensive financial platform for screening stocks, tracking earnings, and analyzing market data.
+
+## Features
+
+- 📊 **Stock Screener** - Filter and discover stocks based on various criteria
+- 📈 **Earnings Calendar** - Track upcoming earnings reports and company announcements
+- 💰 **Market Analysis** - Analyze trends and make informed investment decisions
+- 🔐 **Secure Authentication** - User accounts powered by Clerk
+- 💾 **Data Storage** - Persistent data management with Supabase
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **Authentication:** Clerk
+- **Database:** Supabase
+- **Styling:** TailwindCSS
+- **Language:** TypeScript
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20+
+- npm or yarn
+- Clerk account ([sign up here](https://clerk.com))
+- Supabase project ([create one here](https://supabase.com))
+
+### Environment Variables
+
+Create a `.env.local` file in the root directory:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+
+# Supabase Database
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Install dependencies
+npm install
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Run development server
+npm run dev
+```
 
-## Learn More
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-To learn more about Next.js, take a look at the following resources:
+### Build for Production
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run build
+npm run start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+src/
+├── app/                    # Next.js App Router pages
+├── utils/
+│   └── supabase/          # Supabase client utilities
+│       ├── client.ts      # Client-side queries
+│       └── server.ts      # Server-side queries
+└── middleware.ts          # Clerk authentication middleware
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Database Queries
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Client-Side (Client Components)
+
+```typescript
+'use client';
+import { useSupabaseClient } from '@/utils/supabase/client';
+
+export default function MyComponent() {
+  const supabase = useSupabaseClient();
+  // Use supabase for queries
+}
+```
+
+### Server-Side (Server Components, API Routes)
+
+```typescript
+import { createSupabaseClient } from '@/utils/supabase/server';
+
+export default async function MyServerComponent() {
+  const supabase = await createSupabaseClient();
+  // Use supabase for queries
+}
+```
+
+## Contributing
+
+This is a personal project, but suggestions and feedback are welcome.
+
+## License
+
+MIT
