@@ -32,16 +32,16 @@ export async function getEarningsCalendar(startDate?: Date, endDate?: Date): Pro
     return [];
   }
 
-  // Default to upcoming week if no dates provided
+  // Default to today if no start date provided
   const start = startDate ? startDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
   
-  // If no end date, default to 7 days from start
+  // If no end date, default to 1 month from start
   let endStr: string;
   if (endDate) {
     endStr = endDate.toISOString().split('T')[0];
   } else {
     const d = startDate ? new Date(startDate) : new Date();
-    d.setDate(d.getDate() + 14); // Default to 2 weeks view
+    d.setMonth(d.getMonth() + 1); // Default to 1 month view
     endStr = d.toISOString().split('T')[0];
   }
 

@@ -10,6 +10,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import DateRangeFilter from './DateRangeFilter';
 
 export const metadata: Metadata = {
   title: 'Upcoming Earnings Reports | FinDash',
@@ -39,8 +40,26 @@ function formatReportDate(date: string): string {
   });
 }
 
-function EarningsPagination({ currentPage = 1, totalPages = 1 }: { currentPage?: number; totalPages?: number }) {
+function EarningsPagination({ 
+  currentPage = 1, 
+  totalPages = 1, 
+  startDate, 
+  endDate 
+}: { 
+  currentPage?: number; 
+  totalPages?: number;
+  startDate?: string;
+  endDate?: string;
+}) {
   if (totalPages <= 1) return null;
+  
+  const buildUrl = (pageNum: number) => {
+    const params = new URLSearchParams();
+    params.set('page', pageNum.toString());
+    if (startDate) params.set('startDate', startDate);
+    if (endDate) params.set('endDate', endDate);
+    return `/earnings?${params.toString()}`;
+  };
   
   const pages = [];
   
@@ -68,7 +87,10 @@ function EarningsPagination({ currentPage = 1, totalPages = 1 }: { currentPage?:
     <Pagination className="mt-4">
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious href="#" className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''} />
+          <PaginationPrevious 
+            href={currentPage > 1 ? buildUrl(currentPage - 1) : '#'} 
+            className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''} 
+          />
         </PaginationItem>
         
         {pages.map((page, idx) => {
@@ -82,7 +104,7 @@ function EarningsPagination({ currentPage = 1, totalPages = 1 }: { currentPage?:
           
           return (
             <PaginationItem key={page}>
-              <PaginationLink href="#" isActive={page === currentPage}>
+              <PaginationLink href={buildUrl(page as number)} isActive={page === currentPage}>
                 {page}
               </PaginationLink>
             </PaginationItem>
@@ -90,19 +112,44 @@ function EarningsPagination({ currentPage = 1, totalPages = 1 }: { currentPage?:
         })}
         
         <PaginationItem>
-          <PaginationNext href="#" className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''} />
+          <PaginationNext 
+            href={currentPage < totalPages ? buildUrl(currentPage + 1) : '#'} 
+            className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''} 
+          />
         </PaginationItem>
       </PaginationContent>
     </Pagination>
   );
 }
 
-export default async function EarningsPage() {
-  // Fetch upcoming earnings for the next 2 weeks
-  const earnings = await getEarningsCalendar();
+interface EarningsPageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function EarningsPage({ searchParams }: EarningsPageProps) {
+  // Await searchParams (Next.js 15+)
+  const params = await searchParams;
+  
+  // Parse date range from URL params
+  const startDateParam = typeof params.startDate === 'string' ? params.startDate : undefined;
+  const endDateParam = typeof params.endDate === 'string' ? params.endDate : undefined;
+  
+  // Parse page number from URL params
+  const pageParam = typeof params.page === 'string' ? params.page : '1';
+  const currentPage = Math.max(1, parseInt(pageParam, 10) || 1);
+  
+  const startDate = startDateParam ? new Date(startDateParam) : undefined;
+  const endDate = endDateParam ? new Date(endDateParam) : undefined;
+  
+  // Fetch earnings with optional date range
+  const allEarnings = await getEarningsCalendar(startDate, endDate);
   const itemsPerPage = 10;
-  const totalPages = Math.ceil(earnings.length / itemsPerPage);
-  const currentPage = 1; // This would come from URL params in a real implementation
+  const totalPages = Math.ceil(allEarnings.length / itemsPerPage);
+  
+  // Calculate pagination
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const earnings = allEarnings.slice(startIndex, endIndex);
 
   return (
     <div className="min-h-screen bg-zinc-50">
@@ -110,13 +157,36 @@ export default async function EarningsPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-zinc-900">Upcoming Earnings Reports</h1>
+          <p className="text-zinc-600 mt-2">
+            {startDateParam && endDateParam
+              ? `Showing earnings from ${new Date(startDateParam).toLocaleDateString()} to ${new Date(endDateParam).toLocaleDateString()}`
+              : 'Showing earnings for the upcoming month'}
+          </p>
         </div>
 
+        {/* Date Range Filter */}
+        <DateRangeFilter
+          defaultStartDate={startDateParam}
+          defaultEndDate={endDateParam}
+        />
+
+        {/* Results Summary */}
+        {allEarnings.length > 0 && (
+          <div className="mb-4 text-sm text-zinc-600">
+            Showing {startIndex + 1}-{Math.min(endIndex, allEarnings.length)} of {allEarnings.length} earnings reports
+          </div>
+        )}
+
         {/* Earnings Table */}
-        {earnings.length === 0 ? (
+        {earnings.length === 0 && allEarnings.length === 0 ? (
           <div className="bg-white rounded-lg border border-zinc-200 p-12 text-center">
             <h3 className="text-lg font-medium text-zinc-900 mb-2">No upcoming earnings found</h3>
             <p className="text-zinc-500">Check back later or verify your API key.</p>
+          </div>
+        ) : earnings.length === 0 ? (
+          <div className="bg-white rounded-lg border border-zinc-200 p-12 text-center">
+            <h3 className="text-lg font-medium text-zinc-900 mb-2">No results on this page</h3>
+            <p className="text-zinc-500">Try going back to page 1 or adjusting your filters.</p>
           </div>
         ) : (
           <div className="w-full">
@@ -206,7 +276,12 @@ export default async function EarningsPage() {
             </div>
             
             {/* Pagination */}
-            <EarningsPagination currentPage={currentPage} totalPages={totalPages} />
+            <EarningsPagination 
+              currentPage={currentPage} 
+              totalPages={totalPages}
+              startDate={startDateParam}
+              endDate={endDateParam}
+            />
           </div>
         )}
       </div>
