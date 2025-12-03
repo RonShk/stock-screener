@@ -22,6 +22,48 @@ export interface EarningsEntry {
   fiscalDateEnding?: string; // Optional - not always provided by API
 }
 
+// Company Profile interface - matches FMP API response
+export interface CompanyProfile {
+  symbol: string;
+  price: number;
+  beta?: number;
+  volume?: number;
+  averageVolume?: number;
+  marketCap?: number;
+  lastDividend?: number;
+  range?: string;
+  change?: number;
+  changePercentage?: number;
+  companyName: string;
+  currency?: string;
+  cik?: string;
+  isin?: string;
+  cusip?: string;
+  exchange?: string;
+  exchangeFullName?: string;
+  industry?: string;
+  website?: string;
+  description?: string;
+  ceo?: string;
+  sector?: string;
+  country?: string;
+  fullTimeEmployees?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  dcfDiff?: number;
+  dcf?: number;
+  image?: string;
+  ipoDate?: string;
+  defaultImage?: boolean;
+  isEtf?: boolean;
+  isActivelyTrading?: boolean;
+  isAdr?: boolean;
+  isFund?: boolean;
+}
+
 const BASE_URL = 'https://financialmodelingprep.com/stable';
 
 export async function getEarningsCalendar(startDate?: Date, endDate?: Date): Promise<EarningsEntry[]> {
@@ -79,8 +121,32 @@ export async function getEarningsCalendar(startDate?: Date, endDate?: Date): Pro
   }
 }
 
+export async function getCompanyProfile(symbol: string): Promise<CompanyProfile | null> {
+  const apiKey = process.env.FMP_API_KEY;
+  
+  if (!apiKey) {
+    console.error('FMP_API_KEY is missing');
+    return null;
+  }
 
+  try {
+    const response = await fetch(
+      `${BASE_URL}/profile?symbol=${symbol}&apikey=${apiKey}`, 
+      { next: { revalidate: 3600 } } // Cache for 1 hour
+    );
 
+    if (!response.ok) {
+      throw new Error(`Failed to fetch company profile: ${response.statusText}`);
+    }
 
+    const data: CompanyProfile[] = await response.json();
+    
+    // API returns an array, we want the first item
+    return data[0] || null;
+  } catch (error) {
+    console.error('Error fetching company profile:', error);
+    return null;
+  }
+}
 
 
