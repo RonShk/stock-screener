@@ -1,4 +1,5 @@
 import { getEarningsCalendar, EarningsEntry } from '@/utils/fmp';
+import { formatMoney } from '@/utils/format';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import {
@@ -17,20 +18,6 @@ export const metadata: Metadata = {
   title: 'Upcoming Earnings Reports | FinDash',
   description: 'Upcoming earnings reports calendar, analyst estimates, and historical data.',
 };
-
-function formatMoney(value: number | null) {
-  if (value === null) return '-';
-  
-  // For billions
-  if (Math.abs(value) >= 1.0e9) {
-    return `$${(value / 1.0e9).toFixed(1)}B`;
-  }
-  // For millions
-  if (Math.abs(value) >= 1.0e6) {
-    return `$${(value / 1.0e6).toFixed(1)}M`;
-  }
-  return `$${value.toLocaleString()}`;
-}
 
 function formatReportDate(date: string): string {
   const dateObj = new Date(date);
@@ -262,11 +249,11 @@ export default async function EarningsPage({ searchParams }: EarningsPageProps) 
                         {item.epsEstimated !== null ? `$${item.epsEstimated.toFixed(2)}` : '-'}
                       </td>
                       <td className="py-4 px-3 font-bold text-zinc-900 dark:text-zinc-50">
-                        {formatMoney(item.revenueEstimated)}
+                        {formatMoney(item.revenueEstimated, 1)}
                       </td>
                       <td className="py-4 px-3">
                         <Link
-                          href={`/earnings/${item.symbol}`}
+                          href={`/stock/${item.symbol}`}
                           className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium"
                         >
                           View Details
