@@ -24,7 +24,7 @@ export default async function StockPage({ params }: StockPageProps) {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           <div className="flex items-center justify-between mb-8">
             <Link
@@ -37,7 +37,7 @@ export default async function StockPage({ params }: StockPageProps) {
             <ThemeToggle />
           </div>
           
-          <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-12 text-center">
+          <div className="bg-card rounded-lg border border-zinc-200 dark:border-zinc-800 p-12 text-center">
             <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-50 mb-2">
               Stock not found
             </h3>
@@ -55,7 +55,7 @@ export default async function StockPage({ params }: StockPageProps) {
   const isPositive = change >= 0;
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header with Back Button and Theme Toggle */}
         <div className="flex items-center justify-between mb-6">
@@ -81,7 +81,7 @@ export default async function StockPage({ params }: StockPageProps) {
               </p>
             </div>
             <div className="flex gap-3">
-              <button className="px-4 py-2 text-sm font-medium text-zinc-900 dark:text-zinc-50 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">
+              <button className="px-4 py-2 text-sm font-medium text-zinc-900 dark:text-zinc-50 bg-card border border-zinc-300 dark:border-zinc-700 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">
                 + Add to Watchlist
               </button>
               <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 rounded-lg transition-colors">
@@ -92,17 +92,14 @@ export default async function StockPage({ params }: StockPageProps) {
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
           {/* Left Column - Chart */}
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
+            <div className="bg-card rounded-lg border border-zinc-200 dark:border-zinc-800 p-6 h-full">
               {/* Price Display */}
               <div className="mb-6">
-                <div className="text-4xl font-bold text-zinc-900 dark:text-zinc-50 mb-2">
+                <div className="text-4xl font-bold text-zinc-900 dark:text-zinc-50">
                   ${profile.price.toFixed(2)}
-                </div>
-                <div className={`text-sm font-medium ${isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                  {isPositive ? '+' : ''}{change.toFixed(2)} ({isPositive ? '+' : ''}{changePercentage.toFixed(2)}%) Today
                 </div>
               </div>
 
@@ -112,13 +109,13 @@ export default async function StockPage({ params }: StockPageProps) {
           </div>
 
           {/* Right Column - Stats */}
-          <div className="space-y-6">
+          <div className="flex flex-col gap-6 h-full">
             {/* More Statistics */}
-            <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
+            <div className="bg-card rounded-lg border border-zinc-200 dark:border-zinc-800 p-6 flex-1 flex flex-col">
               <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-50 mb-4">
                 More Statistics
               </h2>
-              <div className="space-y-4">
+              <div className="space-y-4 flex-1">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-zinc-600 dark:text-zinc-400">Market Cap</span>
                   <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
@@ -153,11 +150,11 @@ export default async function StockPage({ params }: StockPageProps) {
             </div>
 
             {/* Company Info */}
-            <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
+            <div className="bg-card rounded-lg border border-zinc-200 dark:border-zinc-800 p-6 flex-1 flex flex-col">
               <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-50 mb-4">
                 Company Info
               </h2>
-              <div className="space-y-4">
+              <div className="space-y-4 flex-1">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-zinc-600 dark:text-zinc-400">52-Week Range</span>
                   <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
@@ -182,7 +179,7 @@ export default async function StockPage({ params }: StockPageProps) {
         </div>
 
         {/* About Section */}
-        <div className="mt-6 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
+        <div className="mt-6 bg-card rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
           <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-50 mb-4">
             About {profile.companyName}
           </h2>
