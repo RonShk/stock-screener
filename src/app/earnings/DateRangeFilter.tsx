@@ -145,7 +145,7 @@ export default function DateRangeFilter({ defaultStartDate, defaultEndDate }: Da
           <Button
             onClick={handleClear}
             variant="outline"
-            className="border-zinc-300 text-zinc-700"
+            className="border-zinc-300 text-zinc-700 hover:bg-zinc-50"
           >
             Clear
           </Button>
