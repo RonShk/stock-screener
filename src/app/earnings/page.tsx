@@ -140,7 +140,7 @@ export default async function EarningsPage({ searchParams }: EarningsPageProps) 
   const earnings = allEarnings.slice(startIndex, endIndex);
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Header */}
         <div className="mb-8 flex items-start justify-between">
@@ -170,19 +170,19 @@ export default async function EarningsPage({ searchParams }: EarningsPageProps) 
 
         {/* Earnings Table */}
         {earnings.length === 0 && allEarnings.length === 0 ? (
-          <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-12 text-center">
+          <div className="bg-card rounded-lg border border-zinc-200 dark:border-zinc-800 p-12 text-center">
             <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-50 mb-2">No upcoming earnings found</h3>
             <p className="text-zinc-500 dark:text-zinc-400">Check back later or verify your API key.</p>
           </div>
         ) : earnings.length === 0 ? (
-          <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-12 text-center">
+          <div className="bg-card rounded-lg border border-zinc-200 dark:border-zinc-800 p-12 text-center">
             <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-50 mb-2">No results on this page</h3>
             <p className="text-zinc-500 dark:text-zinc-400">Try going back to page 1 or adjusting your filters.</p>
           </div>
         ) : (
           <div className="w-full">
             {/* Table Headers - Outside the table, matching background */}
-            <div className="w-full overflow-x-auto bg-zinc-50 dark:bg-zinc-900">
+            <div className="w-full overflow-x-auto bg-card">
               <table className="w-full caption-bottom text-sm table-fixed">
                 <colgroup>
                   <col className="w-[24%]" />
@@ -217,7 +217,7 @@ export default async function EarningsPage({ searchParams }: EarningsPageProps) 
             </div>
             
             {/* Table Body */}
-            <div className="w-full bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+            <div className="w-full bg-card rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
               <div className="w-full overflow-x-auto">
                 <table className="w-full caption-bottom text-sm table-fixed">
                   <colgroup>
